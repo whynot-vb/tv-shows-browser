@@ -8,7 +8,8 @@ import Recommended from "./Recommended";
 import ActorDetails from "./ActorDetails";
 import EpisodesInfo from "./EpisodesInfo";
 
-const selectPosterPath = (state) => state.details.details.details.poster_path;
+export const selectPosterPath = (state) =>
+  state?.details?.details?.details?.poster_path;
 
 export default function AllDetails() {
   const poster_path = useSelector(selectPosterPath);
@@ -20,10 +21,14 @@ export default function AllDetails() {
   };
   return (
     <div style={myStyle}>
-      {!isEpisodesPageOn && <BasicInfo />}
-      {!isEpisodesPageOn && <ActorDetails />}
-      {!isEpisodesPageOn && <ShowImages />}
-      {!isEpisodesPageOn && <Recommended />}
+      {!isEpisodesPageOn && (
+        <>
+          <BasicInfo />
+          <ActorDetails />
+          <ShowImages />
+          <Recommended />
+        </>
+      )}
       {isEpisodesPageOn && <EpisodesInfo />}
     </div>
   );

@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
+// import AppBar from "@material-ui/core/AppBar";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 import {
-  selectResults,
   selectStatus,
   selectResultIds,
   mostPopularTvShows,
@@ -39,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Navbar() {
-  const results = useSelector(selectResults);
   const status = useSelector(selectStatus);
   const showIds = useSelector(selectResultIds);
   const classes = useStyles();

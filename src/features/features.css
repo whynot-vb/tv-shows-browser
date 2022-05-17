@@ -2,7 +2,8 @@
 
 .tv-list {
   width: 85vw;
-  margin: 0 auto;
+  min-height: 90vh;
+  margin: 15px auto;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-gap: 25px;
@@ -11,6 +12,7 @@
 .card-container {
   display: flex;
   flex-direction: column;
+  max-height: 480px;
   background-color: #95dada;
   border: 1px solid grey;
   border-radius: 5px;
@@ -180,4 +182,41 @@
 
 .episode-container:hover {
   transform: scale(1.05);
+}
+
+.genre-container {
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #cd0000;
+  color: white;
+}
+
+.genre-container span {
+  margin-right: 10px;
+}
+
+.average-container {
+  border-radius: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.remove-btn {
+  background-color: #cd0000;
+  width: 100%;
+  color: white;
+}
+
+.remove-btn:hover {
+  background-color: #e0206d;
+}
+.remove-btn:active {
+  position: relative;
+  top: 1px;
 }

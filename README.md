@@ -6,6 +6,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+## Routes
+
+/home route renderuje se nav bar i search bar status ostavi.
+/auth Register component
+/details/:id tv show that has id: id details
+
 ### `npm start`
 
 Runs the app in the development mode.\

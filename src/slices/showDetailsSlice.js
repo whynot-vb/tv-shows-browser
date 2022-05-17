@@ -87,9 +87,9 @@ export default function detailsReducer(state = initialState, action) {
 
 export function showDetailsTvShow(tvShow_ID) {
   return async function showDetailsTvShowThunk(dispatch, getState) {
-    const response = await axios.get(`
+    let response = await axios.get(`
     https://api.themoviedb.org/3/tv/${tvShow_ID}?api_key=${process.env.REACT_APP_MOVIEDB_KEY}&language=en-US`);
-    dispatch(showDetails(response.data));
+    await dispatch(showDetails(response.data));
   };
 }
 

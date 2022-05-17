@@ -14,21 +14,6 @@ const initialState = {
   page: 1,
   showList: {
     page: 1,
-    // results: Array(20).fill({
-    //   backdrop_path: "",
-    //   first_air_date: "",
-    //   genre_ids: [],
-    //   id: 0,
-    //   name: "",
-    //   origin_country: ["US"],
-    //   original_language: "en",
-    //   original_name: "",
-    //   overview: "",
-    //   popularity: 0,
-    //   poster_path: "",
-    //   vote_average: 0,
-    //   vote_count: 0,
-    // }),
     results: [],
   },
 };
@@ -119,11 +104,6 @@ export const selectResultIds = createSelector(
   (state) => state.shows.showList,
   (showList) => showList.results.map((show) => show.id)
 );
-
-// export const selectSearchResults = createSelector(
-//   (state) => state.shows,
-//   (shows) => shows.searchField
-// );
 
 export const selectPageNumber = createSelector(
   (state) => state.shows,

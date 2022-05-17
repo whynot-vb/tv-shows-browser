@@ -37,8 +37,6 @@ function PaginationObject() {
   // const [page, setPage] = React.useState(1);
   const handleChange = (event, value) => {
     // setPage(value);
-    console.log(value);
-    console.log(pageNumber);
     if (status === "popular") {
       dispatch(mostPopularTvShows(value));
     } else if (status === "onTheAir") {

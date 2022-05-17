@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { alpha, makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 import InputBase from "@material-ui/core/InputBase";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import MenuIcon from "@material-ui/icons/Menu";
+
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
+import SvgIcon from "@mui/material/SvgIcon";
+
 import MoreIcon from "@material-ui/icons/MoreVert";
 import TvIcon from "@material-ui/icons/Tv";
 
@@ -26,6 +27,7 @@ import {
   isEpisodesPageOn,
   clearElements,
 } from "../../constants/actionTypes";
+import { logout } from "../../slices/authSlice";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -97,8 +99,10 @@ export default function SearchBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [searchFieldValue, setSearchFieldValue] = useState("");
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
 
-  const isMenuOpen = Boolean(anchorEl);
+  // const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
@@ -136,21 +140,21 @@ export default function SearchBar() {
     dispatch(mostPopularTvShows(1));
   }
 
+  const handleLogout = () => {
+    if (user) {
+      dispatch(logout());
+    } else return;
+  };
+
+  function HomeIcon(props) {
+    return (
+      <SvgIcon {...props}>
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+      </SvgIcon>
+    );
+  }
+
   const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -163,19 +167,15 @@ export default function SearchBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <MailIcon />
-        </IconButton>
-        <p>TV</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <NotificationsIcon />
-        </IconButton>
-        <p>Favorites</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      {user && token && (
+        <MenuItem>
+          <IconButton color="inherit">
+            <TvIcon component={Link} to="/auth" />
+          </IconButton>
+          <p>Favorites</p>
+        </MenuItem>
+      )}
+      <MenuItem component={Link} to="/auth" onClick={handleLogout}>
         <IconButton
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
@@ -184,7 +184,7 @@ export default function SearchBar() {
         >
           <AccountCircle />
         </IconButton>
-        <p>Log In</p>
+        <p>{!user ? "Register/Login" : "Logout"}</p>
       </MenuItem>
     </Menu>
   );
@@ -194,19 +194,22 @@ export default function SearchBar() {
       <AppBar position="static">
         <Toolbar>
           <IconButton
+            component={Link}
+            to="/"
             edge="start"
             className={classes.menuButton}
             color="inherit"
+            sx={{ marginRight: "20px" }}
             aria-label="open drawer"
             onClick={handleMostPopularClick}
           >
-            <MenuIcon />
+            <HomeIcon color="white" fontSize="large" />
+            {"  "}
+            <Typography className={classes.title} variant="h5" noWrap>
+              TV SHOW BROWSER
+            </Typography>
           </IconButton>
 
-          {"  "}
-          <Typography className={classes.title} variant="h5" noWrap>
-            TV SHOW BROWSER
-          </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -224,21 +227,36 @@ export default function SearchBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <TvIcon />
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <NotificationsIcon />
-            </IconButton>
+            {user && token && (
+              <IconButton
+                component={Link}
+                to="/favorites"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+                sx={{ marginRight: "15px" }}
+              >
+                <Typography variant="h6">Favorites </Typography>
+                <TvIcon />
+              </IconButton>
+            )}
             <IconButton
+              component={Link}
+              to="/auth"
               edge="end"
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              onClick={handleLogout}
               color="inherit"
             >
               <AccountCircle />
+              <Typography variant="h6">
+                {!user ? "Register/Login" : "Logout"}
+              </Typography>
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
@@ -255,7 +273,7 @@ export default function SearchBar() {
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      {renderMenu}
+      {/* {renderMenu} */}
     </div>
   );
 }

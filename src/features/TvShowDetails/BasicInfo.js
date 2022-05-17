@@ -1,23 +1,31 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "@reduxjs/toolkit";
+import { Link } from "react-router-dom";
 
-import { isEpisodesPageOn, clearElements } from "../../constants/actionTypes";
+import { isEpisodesPageOn } from "../../constants/actionTypes";
 import { showEpisodes } from "../../slices/showDetailsSlice";
+import {
+  addShowToFavorites,
+  removeShowFromFavorites,
+  getFavoriteShows,
+} from "../../slices/authSlice";
 import "../../features/features.css";
 
-const selectName = (state) => state.details.details.details.name;
-const selectVoteAverage = (state) => state.details.details.details.vote_average;
-const selectPosterPath = (state) => state.details.details.details.poster_path;
-const selectOverview = (state) => state.details.details.details.overview;
-const selectGenres = (state) => state.details.details.details.genres;
+const selectName = (state) => state?.details?.details?.details?.name;
+const selectVoteAverage = (state) =>
+  state?.details?.details?.details?.vote_average;
+const selectPosterPath = (state) =>
+  state?.details?.details?.details?.poster_path;
+const selectOverview = (state) => state?.details?.details?.details?.overview;
+const selectGenres = (state) => state?.details?.details?.details?.genres;
 const selectFirstAirDate = (state) =>
-  state.details.details.details.first_air_date;
+  state?.details?.details?.details?.first_air_date;
 export const selectNumberOfSeasons = (state) =>
-  state.details.details.details.number_of_seasons;
+  state?.details?.details?.details?.number_of_seasons;
 const selectNumberOfEpisodes = (state) =>
-  state.details.details.details.number_of_episodes;
-const selectTvShowId = (state) => state.details.details.details.id;
+  state?.details?.details?.details?.number_of_episodes;
+const selectTvShowId = (state) => state?.details?.details?.details?.id;
 
 export default function BasicInfo() {
   const dispatch = useDispatch();
@@ -30,6 +38,8 @@ export default function BasicInfo() {
   const numberOfSeasons = useSelector(selectNumberOfSeasons);
   const numberOfEpisodes = useSelector(selectNumberOfEpisodes);
   const tvShow_ID = useSelector(selectTvShowId);
+  const user = localStorage.getItem("user");
+  const token = localStorage.getItem("token");
 
   const handleClick = async () => {
     for (let i = 1; i <= numberOfSeasons; i++) {
@@ -53,8 +63,16 @@ export default function BasicInfo() {
       </div>
       <div className="add-watchlist">
         <button
+          disabled={!(user || token)}
           className="myButton"
-          title="Please sign in to add tv show to your watchlist"
+          title={
+            user
+              ? "Add this show to your favorite list"
+              : "Please sign in to add tv show to your favorite watchlist"
+          }
+          onClick={() => {
+            dispatch(addShowToFavorites(tvShow_ID));
+          }}
         >
           Add to my Watchlist
         </button>
@@ -63,16 +81,20 @@ export default function BasicInfo() {
         <p style={{ fontSize: "16px" }}>{overview}</p>
       </div>
       <div className="genres" style={{ fontSize: "16px" }}>
-        <span>Genres: {genres.map((gen) => gen.name + " ")}</span>
+        <span>Genres: {genres?.map((gen) => gen.name + " ")}</span>
       </div>
       <div className="date-season-info" style={{ fontSize: "16px" }}>
         <span>First air date:{first_air_date} </span>{" "}
-        <button className="episode-button" onClick={handleClick}>
-          Number of seasons:{numberOfSeasons}{" "}
-        </button>{" "}
-        <button className="episode-button" onClick={handleClick}>
-          Number of episodes: {numberOfEpisodes}{" "}
-        </button>{" "}
+        <Link to={`/details/episodes/${tvShow_ID}`}>
+          <button className="episode-button" onClick={handleClick}>
+            Number of seasons:{numberOfSeasons}{" "}
+          </button>{" "}
+        </Link>
+        <Link to={`/details/episodes/${tvShow_ID}`}>
+          <button className="episode-button" onClick={handleClick}>
+            Number of episodes: {numberOfEpisodes}{" "}
+          </button>{" "}
+        </Link>
       </div>
     </div>
   );
